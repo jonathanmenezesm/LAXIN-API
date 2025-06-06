@@ -1,3 +1,6 @@
+# Lista de usuários para simulação de banco de dados
+# Não será listado no github, apenas para simulação local
+
 usuarios = [
     {
         "id": 1,
