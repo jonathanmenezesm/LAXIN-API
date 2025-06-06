@@ -6,9 +6,9 @@ Rotas para gerenciamento de usuários:
 
 - Create (POST)   : /usuarios/                - Criar novo usuário
 - Read   (GET)    : /usuarios/                - Listar todos os usuários
-- Read   (GET)    : /usuarios/<int:user_id>   - Obter usuário por ID
-- Update (PUT)    : /usuarios/<int:user_id>   - Atualizar usuário por ID
-- Delete (DELETE) : /usuarios/<int:user_id>   - Remover usuário por ID
+- Read   (GET)    : /usuarios/<int:id_usuario>   - Obter usuário por ID
+- Update (PUT)    : /usuarios/<int:id_usuario>   - Atualizar usuário por ID
+- Delete (DELETE) : /usuarios/<int:id_usuario>   - Remover usuário por ID
 '''
 
 
@@ -26,8 +26,12 @@ def listar_usuarios():
 # Crud - Cadastrar novo usuário
 @bp_usuarios.route('/cadastrar', methods=['POST'])
 def cadastrar_usuario():
+    
     dados_requisicao = request.get_json()
     
+    if not dados_requisicao:
+        return jsonify({'Erro': 'Todos os campos devem ser preenchidos'}), 400
+
     novo_usuario = {
         'id': len(usuarios) + 1,  # Gerando um novo ID baseado no tamanho da lista
         'nome': dados_requisicao['nome'],
@@ -41,4 +45,31 @@ def cadastrar_usuario():
     usuarios.append(novo_usuario)
     return jsonify({'resposta': 'Usuário cadastrado com sucesso!'}), 201
 
+# cRud - Obter usuário por ID
+@bp_usuarios.route('/<int:id_usuario>', methods=['GET'])
+def obter_usuario(id_usuario):
+    for usuario in usuarios:
+        if usuario['id'] == id_usuario:
+            return jsonify(usuario), 200
+    return jsonify({'Erro': 'Usuário não encontrado'}), 404
 
+# crUd - Atualizar usuário por ID
+@bp_usuarios.route('/atualizar/<int:id_usuario>', methods=['PUT'])
+def atualizar_usuario(id_usuario):
+    dados_requisicao = request.get_json()
+    if not dados_requisicao:
+        return jsonify({'Erro': 'Todos os campos devem ser preenchidos'}), 400
+
+    campos_permitidos = {'nome', 'sobrenome', 'data-nascimento', 'cpf', 'celular', 'email', 'senha'}
+
+    for usuario in usuarios:
+        if usuario['id'] == id_usuario:
+            for campo in campos_permitidos:
+                if campo in dados_requisicao:
+                    usuario[campo] = dados_requisicao[campo]
+            return jsonify({'resposta': 'Atualizado com sucesso'}), 200
+
+    return jsonify({'Erro': 'Usuário não encontrado'}), 404
+
+# cruD - Remover usuário por ID
+@bp_usuarios.route('/remover/<int:id_usuario>', methods=['DELETE'])
