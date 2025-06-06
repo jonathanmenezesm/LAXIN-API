@@ -4,19 +4,18 @@ from src.database.usuarios_db import usuarios
 '''
 Rotas para gerenciamento de usuários:
 
-- Create (POST)   : /usuarios/                - Criar novo usuário
-- Read   (GET)    : /usuarios/                - Listar todos os usuários
-- Read   (GET)    : /usuarios/<int:id_usuario>   - Obter usuário por ID
-- Update (PUT)    : /usuarios/<int:id_usuario>   - Atualizar usuário por ID
-- Delete (DELETE) : /usuarios/<int:id_usuario>   - Remover usuário por ID
+- OK Create (POST)   : /usuarios/                - Criar novo usuário
+- OK Read   (GET)    : /usuarios/                - Listar todos os usuários (PAINEL ADMIN)
+- OK Read   (GET)    : /usuarios/<int:id_usuario>   - Obter usuário por ID
+- OK Update (PUT)    : /usuarios/<int:id_usuario>   - Atualizar usuário por ID
+- OK Delete (DELETE) : /usuarios/<int:id_usuario>   - Remover usuário por ID
 '''
-
 
 
 # Definindo o Blueprint para usuários
 bp_usuarios = Blueprint('usuarios', __name__, url_prefix='/usuarios')
 
-# cRud Listar todos os usuarios (PAINEL ADMIN)
+# Listar todos os usuarios (PAINEL ADMIN)
 @bp_usuarios.route('/', methods=['GET'])
 def listar_usuarios():
     # Aqui você implementaria a lógica para listar usuários
@@ -26,11 +25,20 @@ def listar_usuarios():
 # Crud - Cadastrar novo usuário
 @bp_usuarios.route('/cadastrar', methods=['POST'])
 def cadastrar_usuario():
-    
     dados_requisicao = request.get_json()
     
-    if not dados_requisicao:
-        return jsonify({'Erro': 'Todos os campos devem ser preenchidos'}), 400
+        # Lista de campos obrigatórios
+    campos_obrigatorios = ['nome', 'sobrenome', 'data-nascimento', 'cpf', 'celular', 'email', 'senha']
+
+    # Verifica se todos os campos obrigatórios estão presentes e não vazios
+    for campo in campos_obrigatorios:
+        if campo not in dados_requisicao or not dados_requisicao[campo]:
+            return jsonify({'Erro': f'O campo "{campo}" é obrigatório.'}), 400
+        
+    # Verifica se o CPF já está cadastrado
+    for usuario in usuarios:
+        if usuario['cpf'] == dados_requisicao['cpf']:
+            return jsonify({'Erro': 'CPF já cadastrado.'}), 400
 
     novo_usuario = {
         'id': len(usuarios) + 1,  # Gerando um novo ID baseado no tamanho da lista
@@ -73,3 +81,12 @@ def atualizar_usuario(id_usuario):
 
 # cruD - Remover usuário por ID
 @bp_usuarios.route('/remover/<int:id_usuario>', methods=['DELETE'])
+def remover_usuario(id_usuario):
+    dados_requisicao = request.get_json()
+
+    for usuario in usuarios:
+        if usuario['id'] == id_usuario:
+            usuarios.remove(usuario)
+            return jsonify({'resposta': 'Usuário removido com sucesso!'}), 200
+
+    return jsonify({'Erro': 'Usuário não encontrado'}), 404
