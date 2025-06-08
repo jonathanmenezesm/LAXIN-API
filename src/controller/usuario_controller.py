@@ -11,7 +11,6 @@ Rotas para gerenciamento de usuários:
 - OK Delete (DELETE) : /usuarios/<int:id_usuario>   - Remover usuário por ID
 '''
 
-
 # Definindo o Blueprint para usuários
 bp_usuarios = Blueprint('usuarios', __name__, url_prefix='/usuarios')
 
@@ -21,14 +20,14 @@ def listar_usuarios():
     # Aqui você implementaria a lógica para listar usuários
     return jsonify(usuarios)
 
-
 # Crud - Cadastrar novo usuário
 @bp_usuarios.route('/cadastrar', methods=['POST'])
 def cadastrar_usuario():
     dados_requisicao = request.get_json()
+    print("Dados recebidos:", dados_requisicao)  # Depuração
     
-        # Lista de campos obrigatórios
-    campos_obrigatorios = ['nome', 'sobrenome', 'data-nascimento', 'cpf', 'celular', 'email', 'senha']
+    # Lista de campos obrigatórios
+    campos_obrigatorios = ['nome', 'sobrenome', 'data_nascimento', 'cpf', 'celular', 'email', 'senha']
 
     # Verifica se todos os campos obrigatórios estão presentes e não vazios
     for campo in campos_obrigatorios:
@@ -44,7 +43,7 @@ def cadastrar_usuario():
         'id': len(usuarios) + 1,  # Gerando um novo ID baseado no tamanho da lista
         'nome': dados_requisicao['nome'],
         'sobrenome': dados_requisicao['sobrenome'],
-        'data_nascimento': dados_requisicao['data-nascimento'],
+        'data_nascimento': dados_requisicao['data_nascimento'],
         'cpf': dados_requisicao['cpf'],
         'celular': dados_requisicao['celular'],
         'email': dados_requisicao['email'],
@@ -65,10 +64,12 @@ def obter_usuario(id_usuario):
 @bp_usuarios.route('/atualizar/<int:id_usuario>', methods=['PUT'])
 def atualizar_usuario(id_usuario):
     dados_requisicao = request.get_json()
+    print("Dados recebidos:", dados_requisicao)
+    
     if not dados_requisicao:
         return jsonify({'Erro': 'Todos os campos devem ser preenchidos'}), 400
 
-    campos_permitidos = {'nome', 'sobrenome', 'data-nascimento', 'cpf', 'celular', 'email', 'senha'}
+    campos_permitidos = {'nome', 'sobrenome', 'data_nascimento', 'cpf', 'celular', 'email', 'senha'}
 
     for usuario in usuarios:
         if usuario['id'] == id_usuario:
@@ -82,8 +83,7 @@ def atualizar_usuario(id_usuario):
 # cruD - Remover usuário por ID
 @bp_usuarios.route('/remover/<int:id_usuario>', methods=['DELETE'])
 def remover_usuario(id_usuario):
-    dados_requisicao = request.get_json()
-
+    
     for usuario in usuarios:
         if usuario['id'] == id_usuario:
             usuarios.remove(usuario)
