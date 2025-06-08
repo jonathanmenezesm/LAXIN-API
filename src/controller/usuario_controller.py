@@ -24,7 +24,10 @@ def listar_usuarios():
 @bp_usuarios.route('/cadastrar', methods=['POST'])
 def cadastrar_usuario():
     dados_requisicao = request.get_json()
-    print("Dados recebidos:", dados_requisicao)  # Depuração
+    print("Dados recebidos:", dados_requisicao)  # Depuração, quando em produção, commitar ou remover esta linha
+    
+    if not dados_requisicao:
+        return jsonify({'Erro': 'Todos os campos devem ser preenchidos'}), 400
     
     # Lista de campos obrigatórios
     campos_obrigatorios = ['nome', 'sobrenome', 'data_nascimento', 'cpf', 'celular', 'email', 'senha']
