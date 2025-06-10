@@ -1,7 +1,7 @@
-from ast import stmt
 from flask import Blueprint, request, jsonify
 from sqlalchemy import select
-from src.database.usuarios_db import usuarios
+# from database import usuarios_db #Linha de importação do db fake
+# from src.database.usuarios_db import usuarios #Linha de importação do db fake
 from src.model.usuario_model import Usuario
 from src.model import db
 
@@ -150,3 +150,25 @@ def remover_usuario(id_usuario):
         return jsonify({'resposta': 'Usuário removido com sucesso!'}), 200
 
     return jsonify({'Erro': 'Usuário não encontrado'}), 404
+
+
+# >>>>>>    Adicionando a Blueprint de Login
+@bp_usuarios.route('/login', methods=['POST'])
+def Login():
+    dados_requisicao = request.get_json()
+    
+    email = dados_requisicao.get('email')
+    senha = dados_requisicao.get('senha')
+    
+    if not email or not senha:
+        return jsonify({'mensagem': 'Todos os campos devem ser preenchidos!'}), 400
+    
+    usuario = db.session.execute(db.select(Usuario).where(Usuario.email == email)).scalar()
+    
+    if not usuario:
+        return jsonify({'mensagem': 'Email ou senha estão incorretos.'}), 401
+    
+    if not usuario or usuario.senha != senha:
+        return jsonify({'mensagem': 'Email ou senha estão incorretos.'}), 401
+    
+    return jsonify({'mensagem': 'Usuário logado com sucesso!'})

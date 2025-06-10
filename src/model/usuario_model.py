@@ -35,5 +35,5 @@ class Usuario(db.Model): # Classe que representa a tabela de usuários no banco 
             "data_nascimento": self.data_nascimento,
             "cpf": self.cpf,
             "celular": self.celular,
-            "email": self.email
+            "email": self.email,
         }
