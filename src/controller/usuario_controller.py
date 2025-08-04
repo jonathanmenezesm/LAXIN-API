@@ -171,4 +171,8 @@ def Login():
     if not usuario or usuario.senha != senha:
         return jsonify({'mensagem': 'Email ou senha estão incorretos.'}), 401
     
-    return jsonify({'mensagem': 'Usuário logado com sucesso!'})
+    # Retorne o nome do usuário junto com a mensagem de sucesso
+    return jsonify({
+        'mensagem': 'Usuário logado com sucesso!',
+        'nome': usuario.nome
+    }), 200
