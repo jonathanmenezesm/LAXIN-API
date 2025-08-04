@@ -1,3 +1,9 @@
-venv
-.env
+# Ignorar a pasta venv
+/venv/
+# Ignorar o ambiente virtual
+*.env
+# Ignorar o banco de dados fake
 usuarios_db.py
+# Ignorar arquivos compilados do Python
+*.pyc
+__pycache__/

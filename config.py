@@ -1,3 +1,9 @@
-class Config:
-    JSON_AS_ASCII = False
-    JSON_SORT_KEYS = False
+from os import environ
+from dotenv import load_dotenv
+
+load_dotenv()
+
+class Config():
+    # SQLALCHEMY_DATABASE_URI = environ.get('URL_DATABASE_DEV')
+    SQLALCHEMY_DATABASE_URI = environ.get('URL_DATABASE_PROD')
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
