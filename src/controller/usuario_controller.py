@@ -71,7 +71,8 @@ def cadastrar_usuario():
         cpf=dados_requisicao['cpf'],
         celular=dados_requisicao['celular'],
         email=dados_requisicao['email'],
-        senha=dados_requisicao['senha']
+        senha=dados_requisicao['senha'],
+        role='user'
     )
 
     # INSERT INTO tb_usuario (nome,sobrenome,data_nascimento,cpf,celular,email,senha) VALUES ()
@@ -127,7 +128,7 @@ def atualizar_usuario(id_usuario):
             return jsonify({'Erro': 'Celular já cadastrado.'}), 400
 
     # Lista de campos permitidos para atualização
-    campos_permitidos = {'nome', 'sobrenome', 'data_nascimento', 'cpf', 'celular', 'email', 'senha'}
+    campos_permitidos = {'nome', 'sobrenome', 'data_nascimento', 'cpf', 'celular', 'email', 'senha', 'role'}
 
     for campo in campos_permitidos:
         if campo in dados_requisicao:
@@ -174,5 +175,7 @@ def Login():
     # Retorne o nome do usuário junto com a mensagem de sucesso
     return jsonify({
         'mensagem': 'Usuário logado com sucesso!',
-        'nome': usuario.nome
+        'nome': usuario.nome,
+        'id': usuario.id,
+        'role': usuario.role
     }), 200
