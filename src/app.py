@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, app
 from src.controller.usuario_controller import bp_usuarios 
 from src.controller.venda_controller import bp_vendas
 from config import Config  # Importa a classe de configuração
@@ -23,3 +23,5 @@ def create_app():
     app.register_blueprint(bp_vendas)  # Registra o blueprint de vendas
 
     return app
+
+app = create_app()
