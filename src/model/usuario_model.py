@@ -15,9 +15,10 @@ class Usuario(db.Model): # Classe que representa a tabela de usuários no banco 
     celular = Column(String(15), unique=True, nullable=False)
     email = Column(String(100), unique=True, nullable=False)
     senha = Column(String(255), nullable=False)
+    role = Column(String(20), nullable=False, default='user')
 
     # Método construtor para inicializar os atributos do usuário
-    def __init__(self, nome, sobrenome, data_nascimento, cpf, celular, email, senha):
+    def __init__(self, nome, sobrenome, data_nascimento, cpf, celular, email, senha, role='user'):
         self.nome = nome
         self.sobrenome = sobrenome
         self.data_nascimento = data_nascimento
@@ -25,6 +26,7 @@ class Usuario(db.Model): # Classe que representa a tabela de usuários no banco 
         self.celular = celular
         self.email = email
         self.senha = senha
+        self.role = role
         
     # Método para converter o objeto em um dicionário, útil para serialização
     def to_dict(self):
@@ -36,4 +38,5 @@ class Usuario(db.Model): # Classe que representa a tabela de usuários no banco 
             "cpf": self.cpf,
             "celular": self.celular,
             "email": self.email,
+            "role": self.role,
         }
